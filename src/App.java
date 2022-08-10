@@ -39,7 +39,7 @@ public class App {
                 System.out.print("\nEnter your choice: ");
 
                 Scanner sc = new Scanner(System.in);
-                userInput = sc.nextLine().split(" ");
+                userInput = sc.nextLine().replace("\"", "").split(" ");
 
                 if (userInput.length == 1 && userInput[0].contains(".txt")) {
                     userChoice = new UserChoice(1, userInput[0]);
