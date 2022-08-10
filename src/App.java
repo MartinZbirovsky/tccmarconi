@@ -1,18 +1,19 @@
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
 
 public class App {
     public static void main(String[] args) {
+        ResultHandler resultHandler = ResultHandler.getInstance();
+
         Scanner sc = new Scanner(System.in);
         String wantContinue = "";
-        byte userChoice;
+        UserChoice userChoice;
 
         do{
             userChoice = getUserChoice();
-            switch (userChoice) {
-                case 1 -> ResultHandler.resultProcessConsoleToConsole();
-                case 2 -> ResultHandler.resultProcessFileToFile();
-                case 3 -> ResultHandler.resultProcessFileToConsole();
+            switch (userChoice.getChoiceNumber()) {
+                case 1 -> resultHandler.resultProcess(userChoice.getFistFilePath());
+                case 2 -> resultHandler.resultProcess(userChoice.getFistFilePath(), userChoice.getSecondFilePath());
+                case 3 -> resultHandler.resultProcess();
                 default -> wantContinue = "No";
             }
 
@@ -21,6 +22,7 @@ public class App {
                 wantContinue = sc.next().toUpperCase();
             }
         } while (wantContinue.equals("Y"));
+
         System.out.println("\nEND");
     }
 
@@ -28,32 +30,38 @@ public class App {
      * Open "menu" to ask user what he wants to use and return his choice.
      * @return int - User choice
      */
-    private static byte getUserChoice () {
-        byte choice = 0;
-        boolean isNumValid = false;
+    private static UserChoice getUserChoice () {
+        UserChoice userChoice = null;
+        String[] userInput;
 
-        System.out.printf("\nWELCOME TO APP - Choose how to work with numbers."
-                + "\nType 1 - Print numbers from console to console."
-                + "\nType 2 - Print numbers from file to file. "
-                + "\nType 3 - Print numbers from file to console."
-                + "\nType 4 - End program");
-
-        while(!isNumValid){
+        while(userChoice == null){
             try {
-                System.out.print("\nChose number: ");
+                System.out.print("\nEnter your choice: ");
+
                 Scanner sc = new Scanner(System.in);
-                choice = sc.nextByte();
+                userInput = sc.nextLine().split(" ");
 
-                if(choice < 1 || choice > 4)
-                    throw new InputMismatchException("Allowed range is 1-4.");
-
-                isNumValid = true;
+                if (userInput.length == 1 && userInput[0].contains(".txt")) {
+                    userChoice = new UserChoice(1, userInput[0]);
+                }
+                else if (userInput.length == 2 && userInput[0].contains(".txt") && userInput[1].contains(".txt")) {
+                    userChoice = new UserChoice(2, userInput[0], userInput[1]);
+                }
+                else if (userInput.length == 1 && !userInput[0].contains(".txt")) {
+                    try {
+                        if(Integer.parseInt(userInput[0]) <= 0) throw new InputMismatchException("Only number bigger than zero.");
+                    } catch (NumberFormatException e) {
+                        throw new InputMismatchException("Error... enter valid path or number bigger than zero at first place");
+                    }
+                    userChoice = new UserChoice(3);
+                }
+                else {
+                    throw new InputMismatchException("Invalid arguments");
+                }
             } catch (InputMismatchException e) {
-                String msg = e.getMessage() == null ? "This is not a number! " : e.getMessage();
-                System.out.println(msg);
+                System.out.println(e.getMessage());
             }
         }
-        System.out.println();
-        return choice;
+        return userChoice;
     }
 }

@@ -11,7 +11,7 @@ public class FileHandler {
      * @param aFilePath - File to read
      * @return parsed numbers
      */
-    protected static List<Integer> readNumFromFile(String aFilePath) {
+    public static List<Integer> readNumFromFile(String aFilePath) {
         List<Integer> nums = new ArrayList<>();
 
         try {
@@ -33,9 +33,9 @@ public class FileHandler {
      * Add text to file
      * @param aTextToAdd - Text to add
      */
-    protected static void createFileWithText(String aTextToAdd) {
+    public static void createFileWithText(String aFilePath, String aTextToAdd) {
         try {
-            File file = new File("output.txt");
+            File file = new File(aFilePath);
             FileWriter fw = new FileWriter(file);
             fw.write(aTextToAdd);
             fw.close();
@@ -46,24 +46,13 @@ public class FileHandler {
     }
 
     /**
-     * Check if file exist and if yes return his path
-     * @return - File path
+     * Check if file exists.
+     * @param aFilePath - File path
+     * @return - true if file is present else false
      */
-    protected static String getFilePathIfExist() {
-        String filePath;
-
-        do{
-            Scanner cs = new Scanner(System.in);
-            System.out.print("Type path to the numbers file: ");
-            filePath = cs.nextLine();
-
-            File file = new File(filePath);
-            if (file.exists() && filePath.endsWith(".txt"))
-                break;
-
-            System.out.println("Incorrect path");
-        } while (!filePath.isEmpty());
-        return filePath;
+    public static boolean fileExist(String aFilePath) {
+            File file = new File(aFilePath);
+            return file.exists();
     }
 
     /**
@@ -72,7 +61,7 @@ public class FileHandler {
      * @return - List of integers
      * @throws InputMismatchException - Invalid number
      */
-    protected static List<Integer> parseStringToInt (String aStringWithNums) throws InputMismatchException {
+    public static List<Integer> parseStringToInt (String aStringWithNums) throws InputMismatchException {
         List<Integer> nums = new ArrayList<>();
         Arrays.stream(aStringWithNums.split(" ")).forEach(num ->
             nums.add(Integer.parseInt(num))

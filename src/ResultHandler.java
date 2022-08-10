@@ -1,24 +1,27 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
-public class ResultHandler {
+public class ResultHandler implements ResultHandlerF {
+
+    private static final ResultHandler handlerInstance = new ResultHandler();
+    public static ResultHandler getInstance(){
+        return handlerInstance;
+    }
 
     /**
      * Result console to console
      * Filter console input and print result to console
      */
-    protected static void resultProcessConsoleToConsole () {
-        boolean isNumValid = false;
+    @Override
+    public void resultProcess () {
         List<Integer> nums = new ArrayList<>();
         Scanner cs = new Scanner(System.in);
 
-        System.out.println("Enter all numbers on one line separated by a space. Example: \"1 2 3 4\"");
-        while(!isNumValid){
+        System.out.println("Enter all numbers on one line separated by a space. Example: \"  1 2 3 4  \"");
+        while(nums.isEmpty()){
             try {
                 nums = FileHandler.parseStringToInt(cs.nextLine());
-                isNumValid = true;
             } catch (NumberFormatException e) {
                 System.out.println("Use only numbers separated by a space... like 1 2 3");
             }
@@ -31,33 +34,32 @@ public class ResultHandler {
      * Result file to console
      * Read input file and print filtered numbers into console
      */
-    protected static void resultProcessFileToConsole () {
-        String filePath = FileHandler.getFilePathIfExist();
+    @Override
+    public void resultProcess (String aFilePath) {
+        List<Integer> nums;
 
-        List<Integer> nums = filterNumber(FileHandler.readNumFromFile(filePath));
-        System.out.println("Your numbers: " + nums.toString());
+        if(FileHandler.fileExist(aFilePath)){
+            nums = filterNumber(FileHandler.readNumFromFile(aFilePath));
+            System.out.println("Your numbers: " + nums.toString());
+        } else {
+            System.out.println("File not found!");
+        }
     }
 
     /**
      * Result file to file
      * Filter all number inside input file and save them into output file.
      */
-    protected static void resultProcessFileToFile () {
-        String filePath = FileHandler.getFilePathIfExist();
+    @Override
+    public void resultProcess (String aFirstFilePath, String aSecondFilePath) {
+        List<Integer> nums;
 
-        FileHandler.createFileWithText(filterNumber(FileHandler.readNumFromFile(filePath)).toString());
-        System.out.println("The numbers from input file were filtered and saved in the output file");
-    }
-
-    /**
-     * Check if size number is odd or even and return only odd or even numbers
-     * odd = odd, even = even.
-     * @param aNums - List of numbers
-     * @return filtered list
-     */
-    private static List<Integer> filterNumber(List<Integer> aNums) {
-        return (aNums.size() % 2 == 0)
-                ? aNums.stream().filter(n -> n%2 == 0).collect(Collectors.toList())
-                : aNums.stream().filter(n -> n%2 != 0).collect(Collectors.toList());
-    }
+        if(FileHandler.fileExist(aFirstFilePath)){
+            nums = filterNumber(FileHandler.readNumFromFile(aFirstFilePath));
+            FileHandler.createFileWithText(aSecondFilePath, nums.toString());
+            System.out.println("The numbers from input file were filtered and saved in the output file");
+        } else {
+            System.out.println("File not found!");
+        }
+   }
 }
