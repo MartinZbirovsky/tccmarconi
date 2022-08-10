@@ -4,7 +4,7 @@ import java.util.Scanner;
 public class App {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        String wantContinue;
+        String wantContinue = "";
         byte userChoice;
 
         do{
@@ -13,10 +13,13 @@ public class App {
                 case 1 -> ResultHandler.resultProcessConsoleToConsole();
                 case 2 -> ResultHandler.resultProcessFileToFile();
                 case 3 -> ResultHandler.resultProcessFileToConsole();
-                default -> System.out.println("Something happened :D");
+                default -> wantContinue = "No";
             }
-            System.out.println("\nDo you want continue? Type Y and press enter. N to end.");
-            wantContinue = sc.next().toUpperCase();
+
+            if(!wantContinue.equals("No")){
+                System.out.println("\nDo you want continue? Type Y and press enter. N to end.");
+                wantContinue = sc.next().toUpperCase();
+            }
         } while (wantContinue.equals("Y"));
         System.out.println("\nEND");
     }
@@ -32,7 +35,8 @@ public class App {
         System.out.printf("\nWELCOME TO APP - Choose how to work with numbers."
                 + "\nType 1 - Print numbers from console to console."
                 + "\nType 2 - Print numbers from file to file. "
-                + "\nType 3 - Print numbers from file to console.");
+                + "\nType 3 - Print numbers from file to console."
+                + "\nType 4 - End program");
 
         while(!isNumValid){
             try {
@@ -40,8 +44,8 @@ public class App {
                 Scanner sc = new Scanner(System.in);
                 choice = sc.nextByte();
 
-                if(choice < 1 || choice > 3)
-                    throw new InputMismatchException("Allowed range is 1-3.");
+                if(choice < 1 || choice > 4)
+                    throw new InputMismatchException("Allowed range is 1-4.");
 
                 isNumValid = true;
             } catch (InputMismatchException e) {
