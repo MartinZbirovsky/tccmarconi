@@ -4,8 +4,11 @@ import java.util.Scanner;
 
 public class ResultHandler implements ResultHandlerF {
 
-    private static final ResultHandler handlerInstance = new ResultHandler();
+    private static ResultHandler handlerInstance;
     public static ResultHandler getInstance(){
+        if(handlerInstance == null) {
+            handlerInstance = new ResultHandler();
+        }
         return handlerInstance;
     }
 
